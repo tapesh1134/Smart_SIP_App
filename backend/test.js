@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const Fund = require('./models/Fund'); // Assuming Fund model is correctly defined
+import mongoose from 'mongoose';
+import Fund from './models/Fund.js'; // Assuming Fund model is correctly defined
 
 mongoose.connect('mongodb://localhost:27017/smart-sip', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {

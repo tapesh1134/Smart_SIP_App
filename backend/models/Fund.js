@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const fundSchema = new mongoose.Schema({
   name: {
@@ -16,6 +16,4 @@ const fundSchema = new mongoose.Schema({
   }
 });
 
-const Fund = mongoose.model('Fund', fundSchema);
-
-module.exports = Fund;
+export const Fund = mongoose.model("Fund", fundSchema);

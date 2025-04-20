@@ -1,11 +1,11 @@
-const Fund = require('../models/Fund');
+import {Fund} from "../models/Fund.js";
 
-exports.getAllFunds = async (req, res) => {
+export const getAllFunds = async (req, res) => {
   const funds = await Fund.find();
   res.json(funds);
 };
 
-exports.addFund = async (req, res) => {
+export const addFund = async (req, res) => {
   const fund = new Fund(req.body);
   await fund.save();
   res.status(201).json(fund);

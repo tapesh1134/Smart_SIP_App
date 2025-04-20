@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { calculateSIP, calculateFutureValue, calculateInvestmentValue } from '../controllers/sipController.js';
+
 const router = express.Router();
-const { calculateSIP,calculateFutureValue,calculateInvestmentValue  } = require('../controllers/sipController');
 
 router.post('/suggest', calculateSIP);
 router.post('/sip', calculateFutureValue);
 router.post('/cal_sip', calculateInvestmentValue);
 
-module.exports = router;
+export default router;

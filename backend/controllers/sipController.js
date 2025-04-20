@@ -1,4 +1,4 @@
-const Fund = require('../models/Fund');
+import {Fund} from "../models/Fund.js";
 
 // SIP formula
 const calculateSIPAmount = (futureValue, rate, timeInYears) => {
@@ -7,7 +7,7 @@ const calculateSIPAmount = (futureValue, rate, timeInYears) => {
   return (futureValue * r) / (Math.pow(1 + r, n) - 1);
 };
 
-exports.calculateSIP = async (req, res) => {
+export const calculateSIP = async (req, res) => {
   try {
     const { targetAmount, duration, risk } = req.body;
 
@@ -92,7 +92,7 @@ exports.calculateSIP = async (req, res) => {
   }
 };
 
-exports.calculateFutureValue = async (req, res) => {
+export const calculateFutureValue = async (req, res) => {
   try {
     const { sipAmount, duration, risk } = req.body;
 
@@ -151,7 +151,7 @@ exports.calculateFutureValue = async (req, res) => {
 
 
 // Calculate Future Value of SIP or Lump Sum
-exports.calculateInvestmentValue = async (req, res) => {
+export const calculateInvestmentValue = async (req, res) => {
   try {
     const { investmentType, amount, cagr, duration } = req.body;
 

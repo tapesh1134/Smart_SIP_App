@@ -1,24 +1,15 @@
-import express from 'express';
-import cors from 'cors';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import fundRoutes from './routes/fundRoutes.js';
-import sipRoutes from './routes/sipRoutes.js';
+import app from "./app.js";
+import cloudinary from "cloudinary";
+import { server } from "./app.js";
 
-dotenv.config({path: "./config/.env"});
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 
-app.use(cors());
-app.use(express.json());
-
-app.use('/api/funds', fundRoutes);
-app.use('/api/sip', sipRoutes);
-
-mongoose.connect(process.env.MONGO_URI || '', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('MongoDB connected');
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  })
-  .catch(err => console.log(err));
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});

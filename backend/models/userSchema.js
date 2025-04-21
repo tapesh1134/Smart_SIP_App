@@ -34,6 +34,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["User", "Super Admin"],
   },
+  totalBalance: {
+    type: Number,
+    default: 0
+  },
+  cashbackSaved: {
+    type: Number, 
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now,

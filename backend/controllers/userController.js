@@ -35,7 +35,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     const cloudinaryResponse = await cloudinary.uploader.upload(
       profileImage.tempFilePath,
       {
-        folder: "EventLy_TBPPP",
+        folder: "Smart_SIP",
       }
     );
     if (!cloudinaryResponse || cloudinaryResponse.error) {
@@ -79,12 +79,32 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   });
   
   export const getProfile = catchAsyncErrors(async (req, res, next) => {
-    const user = req.user;
+    const user = await User.findById(req.user._id);
+  
+    if (!user) {
+      return next(new ErrorHandler("User not found.", 404));
+    }
+  
+    const smartSIPUser = {
+      _id: user._id,
+      userName: user.userName,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      role: user.role,
+      profileImage: user.profileImage,
+      createdAt: user.createdAt,
+      
+      totalBalance: 125000,
+      cashbackSaved: 1850,
+    };
+  
     res.status(200).json({
       success: true,
-      user,
+      user: smartSIPUser,
     });
   });
+  
   
   export const logout = catchAsyncErrors(async (req, res, next) => {
     res

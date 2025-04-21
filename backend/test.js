@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Fund from './models/fundSchema'
 
-mongoose.connect('mongodb+srv://tapesh:tapesh@cluster0.3ozzf.mongodb.net/smart-sip', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     await Fund.insertMany([
       { schemeCode: "118455", risk: "Low"},

@@ -1,13 +1,12 @@
 import mongoose from 'mongoose';
-import Fund from './models/Fund.js'; // Assuming Fund model is correctly defined
+import Fund from './models/fundSchema'
 
-mongoose.connect('mongodb://localhost:27017/smart-sip', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://tapesh:tapesh@cluster0.3ozzf.mongodb.net/smart-sip', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
     await Fund.insertMany([
-      { name: "Fund f", risk: "Low", cagr: 6 },
-      { name: "Fund e", risk: "Medium", cagr: 9 },
-      { name: "Fund d", risk: "Medium", cagr: 10 },
-      { name: "Fund q", risk: "High", cagr: 13 }
+      { schemeCode: "118455", risk: "Low"},
+      { schemeCode: "100153", risk: "Low"},
+      { schemeCode: "151162", risk: "Low"},
     ]);
     console.log('Sample data inserted!');
   })

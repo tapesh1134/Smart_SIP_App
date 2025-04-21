@@ -1,12 +1,27 @@
-import {Fund} from "../models/Fund.js";
+import axios from 'axios';
+import { Fund } from "../models/fundSchema.js";
 
-// SIP formula
 const calculateSIPAmount = (futureValue, rate, timeInYears) => {
   const r = rate / 12 / 100;
   const n = timeInYears * 12;
   return (futureValue * r) / (Math.pow(1 + r, n) - 1);
 };
 
+const fetchLatestNAV = async (schemeCode) => {
+  try {
+    const response = await axios.get(`https://api.mfapi.in/mf/${schemeCode}/latest`);
+    const navData = response.data?.data?.[0];
+    return {
+      nav: navData?.nav || 'N/A',
+      date: navData?.date || 'N/A'
+    };
+  } catch (err) {
+    console.error(`NAV Fetch Error for ${schemeCode}:`, err.message);
+    return { nav: 'N/A', date: 'N/A' };
+  }
+};
+
+// Calculate SIP based on target amount, duration, and risk
 export const calculateSIP = async (req, res) => {
   try {
     const { targetAmount, duration, risk } = req.body;
@@ -15,21 +30,18 @@ export const calculateSIP = async (req, res) => {
       return res.status(400).json({ message: 'targetAmount, duration, and risk are required.' });
     }
 
-    // Fetch all funds
     const allFunds = await Fund.find({});
-    if (!allFunds || allFunds.length === 0) {
+    if (!allFunds.length) {
       return res.status(404).json({ message: 'No mutual funds found.' });
     }
 
-    // Categorize funds by risk
+    // Risk buckets
     const lowRiskFunds = allFunds.filter(f => f.risk === 'Low');
     const mediumRiskFunds = allFunds.filter(f => f.risk === 'Medium');
     const highRiskFunds = allFunds.filter(f => f.risk === 'High');
 
-    // Define allocation strategy based on risk and duration
-    let selectedFunds = [];
+    // Strategy matrix
     let strategy = [];
-
     if (risk === 'Low') {
       strategy = duration <= 5 ? [['Low', 0.7], ['Medium', 0.3]] : [['Low', 0.5], ['Medium', 0.5]];
     } else if (risk === 'Medium') {
@@ -38,43 +50,41 @@ export const calculateSIP = async (req, res) => {
       strategy = duration <= 5 ? [['Medium', 0.7], ['High', 0.3]] : [['Medium', 0.2], ['High', 0.8]];
     }
 
-    // Sort funds by CAGR in descending order within each risk category
-    const sortFundsByCAGR = (funds) => {
-      return funds.sort((a, b) => b.cagr - a.cagr);
-    };
-
+    // Sort funds by CAGR
+    const sortFundsByCAGR = (funds) => funds.sort((a, b) => b.cagr - a.cagr);
     let sipResults = [];
     let totalSIP = 0;
 
-    // Process funds based on selected strategy
+    // Loop over risk strategy and calculate SIP
     for (const [riskLevel, weight] of strategy) {
-      let fundPool = [];
-      if (riskLevel === 'Low') fundPool = lowRiskFunds;
-      else if (riskLevel === 'Medium') fundPool = mediumRiskFunds;
-      else if (riskLevel === 'High') fundPool = highRiskFunds;
+      let fundPool = {
+        Low: lowRiskFunds,
+        Medium: mediumRiskFunds,
+        High: highRiskFunds
+      }[riskLevel] || [];
 
-      if (fundPool.length === 0) continue;
+      if (!fundPool.length) continue;
 
-      // Sort fundPool by CAGR in descending order
       fundPool = sortFundsByCAGR(fundPool);
+      const topN = duration <= 5 ? 2 : 3;
+      const selectedFunds = fundPool.slice(0, topN);
+      const totalCAGR = selectedFunds.reduce((sum, f) => sum + f.cagr, 0);
 
-      // Select top N funds (in this case, limit to 2 or 3 funds based on strategy)
-      const selectedFundCount = duration <= 5 ? 2 : 3; // Choose top 2 for shorter durations, top 3 for longer durations
-      const selectedFundsForRiskLevel = fundPool.slice(0, selectedFundCount);
-
-      // Divide the target amount among the selected funds based on their proportion in CAGR
-      const totalCAGR = selectedFundsForRiskLevel.reduce((acc, fund) => acc + fund.cagr, 0);
-      
-      for (const fund of selectedFundsForRiskLevel) {
+      for (const fund of selectedFunds) {
         const allocation = (targetAmount * weight * (fund.cagr / totalCAGR));
         const sipAmount = calculateSIPAmount(allocation, fund.cagr, duration);
         totalSIP += sipAmount;
 
+        const navInfo = await fetchLatestNAV(fund.schemeCode);
+
         sipResults.push({
           fundName: fund.name,
-          sipAmount: sipAmount.toFixed(2),
-          cagr: fund.cagr,
+          schemeCode: fund.schemeCode,
           risk: fund.risk,
+          cagr: fund.cagr,
+          sipAmount: sipAmount.toFixed(2),
+          latestNAV: navInfo.nav,
+          navDate: navInfo.date
         });
       }
     }
@@ -92,40 +102,37 @@ export const calculateSIP = async (req, res) => {
   }
 };
 
+// Calculate Future Value of SIP based on SIP amount, duration, and risk
 export const calculateFutureValue = async (req, res) => {
   try {
     const { sipAmount, duration, risk } = req.body;
 
-    // Validate input
     if (!sipAmount || !duration || !risk) {
       return res.status(400).json({ message: 'sipAmount, duration, and risk are required.' });
     }
 
-    // Fetch funds based on selected risk category
     let funds = await Fund.find({ risk });
     if (!funds || funds.length === 0) {
       return res.status(404).json({ message: 'No funds found for the selected risk type.' });
     }
 
-    // Sort funds by CAGR in descending order
+    // Sort funds by CAGR
     funds.sort((a, b) => b.cagr - a.cagr);
 
-    // Define the number of funds to select based on the risk and duration
-    const selectedFundCount = duration <= 5 ? 2 : 3; // Choose top 2 for shorter durations, top 3 for longer durations
-    funds = funds.slice(0, selectedFundCount); // Select top `N` funds
+    // Select the top funds based on duration
+    const selectedFundCount = duration <= 5 ? 2 : 3; 
+    funds = funds.slice(0, selectedFundCount);
 
-    const totalCAGR = funds.reduce((acc, fund) => acc + fund.cagr, 0); // Total of selected funds' CAGR
+    const totalCAGR = funds.reduce((acc, fund) => acc + fund.cagr, 0); 
 
     const futureResults = [];
 
-    // Allocate SIP amount proportionally based on CAGR
+    // Calculate future value for each fund
     for (const fund of funds) {
-      // Proportionate allocation of SIP amount based on CAGR
       const allocation = sipAmount * (fund.cagr / totalCAGR);
 
-      // Calculate future value for each fund using the proportionate allocation
-      const r = fund.cagr / 12 / 100; // Monthly rate
-      const n = duration * 12; // Total months
+      const r = fund.cagr / 12 / 100; 
+      const n = duration * 12; 
       const fv = allocation * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
 
       futureResults.push({
@@ -149,22 +156,19 @@ export const calculateFutureValue = async (req, res) => {
   }
 };
 
-
-// Calculate Future Value of SIP or Lump Sum
+// Calculate Investment Value (SIP or Lump Sum)
 export const calculateInvestmentValue = async (req, res) => {
   try {
     const { investmentType, amount, cagr, duration } = req.body;
 
-    // Validate input
     if (!investmentType || !amount || !cagr || !duration) {
       return res.status(400).json({ message: 'investmentType, amount, cagr, and duration are required.' });
     }
 
-    // Calculate future value for SIP
     if (investmentType === 'sip') {
-      const r = cagr / 12 / 100;  // Monthly rate
-      const n = duration * 12;  // Number of months
-      const futureValue = amount * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);  // SIP formula
+      const r = cagr / 12 / 100;  
+      const n = duration * 12;  
+      const futureValue = amount * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);  
 
       res.json({
         success: true,
@@ -172,12 +176,10 @@ export const calculateInvestmentValue = async (req, res) => {
         futureValue: futureValue.toFixed(2),
       });
 
-    }
-    // Calculate future value for Lump Sum Investment
-    else if (investmentType === 'lumpsum') {
-      const r = cagr / 100;  // Annual rate
-      const n = duration;  // Number of years
-      const futureValue = amount * Math.pow(1 + r, n);  // Lump sum formula
+    } else if (investmentType === 'lumpsum') {
+      const r = cagr / 100;  
+      const n = duration;  
+      const futureValue = amount * Math.pow(1 + r, n);  
 
       res.json({
         success: true,

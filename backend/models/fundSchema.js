@@ -1,18 +1,15 @@
 import mongoose from "mongoose";
 
 const fundSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
+  schemeCode: {
+    type: Number,
+    required: true,
+    unique: true
   },
   risk: {
     type: String,
     required: true,
     enum: ["Low", "Medium", "High"]
-  },
-  cagr: {
-    type: Number,
-    required: true
   }
 });
 

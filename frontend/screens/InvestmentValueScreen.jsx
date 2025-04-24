@@ -121,11 +121,19 @@ const InvestmentValueScreen = () => {
           {/* Result Section */}
           {result && result.success && (
             <View style={styles.resultContainer}>
-              <Text style={styles.resultTitle}>Investment Result:</Text>
-              <Text style={styles.resultValue}>₹{parseFloat(result.futureValue).toFixed(2)}</Text>
+              <Text style={styles.resultTitle}>Investment Summary:</Text>
               <Text style={styles.resultMessage}>{result.message}</Text>
+
+              <Text style={styles.resultSubheading}>Invested Amount:</Text>
+              <Text style={styles.resultValue}>₹{parseFloat(result.investedAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</Text>
+
+              <Text style={styles.resultSubheading}>Future Value:</Text>
+              <Text style={[styles.resultValue, { color: "#00FF99" }]}>
+                ₹{parseFloat(result.futureValue).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+              </Text>
             </View>
           )}
+
         </View>
       </ScrollView>
 
@@ -225,6 +233,12 @@ const styles = StyleSheet.create({
   resultMessage: {
     fontSize: 14,
     color: "#A1A1A1", // Light gray for the message
+  },
+  resultSubheading: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#ffffff",
+    marginTop: 10,
   },
   loadingIndicator: {
     marginVertical: 20,

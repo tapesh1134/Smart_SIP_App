@@ -1,5 +1,5 @@
 import express from 'express';
-import { calculateSIP, calculateFutureValue, calculateInvestmentValue } from '../controllers/sipController.js';
+import { calculateSIP, calculateFutureValue, calculateInvestmentValue } from '../controllers/sipController1.js';
 
 const router = express.Router();
 

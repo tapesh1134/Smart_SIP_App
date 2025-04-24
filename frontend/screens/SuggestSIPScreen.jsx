@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { View, TextInput, Button, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from "react-native";
 import BottomNavbar from "../components/BottomNavbar";
 import AppBar from "./Home/AppBar";
+import Slider from '@react-native-community/slider'; // Importing the Slider component
 
 const SuggestSIPScreen = () => {
-  const [form, setForm] = useState({ targetAmount: "", duration: "", risk: "Low" });
+  const [form, setForm] = useState({ targetAmount: 5000, duration: 5, risk: "Low" });
   const [result, setResult] = useState(null);
 
   const handleSubmit = async () => {
@@ -27,24 +28,32 @@ const SuggestSIPScreen = () => {
         <View style={styles.formContainer}>
           <Text style={styles.title}>SIP Suggestions</Text>
 
-          {/* Target Amount Input */}
-          <Text style={styles.inputLabel}>Target Amount:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Target Amount"
-            keyboardType="numeric"
+          {/* Target Amount Slider */}
+          <Text style={styles.inputLabel}>Target Amount: ₹{form.targetAmount}</Text>
+          <Slider
+            style={styles.slider}
+            minimumValue={1000}
+            maximumValue={1000000}
+            step={1000}
             value={form.targetAmount}
-            onChangeText={(val) => setForm({ ...form, targetAmount: val })}
+            onValueChange={(value) => setForm({ ...form, targetAmount: value })}
+            minimumTrackTintColor="#E8434C"
+            maximumTrackTintColor="#8A8A8A"
+            thumbTintColor="#E8434C"
           />
 
-          {/* Duration Input */}
-          <Text style={styles.inputLabel}>Duration (Years):</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Duration"
-            keyboardType="numeric"
+          {/* Duration Slider */}
+          <Text style={styles.inputLabel}>Duration (Years): {form.duration}</Text>
+          <Slider
+            style={styles.slider}
+            minimumValue={1}
+            maximumValue={30}
+            step={1}
             value={form.duration}
-            onChangeText={(val) => setForm({ ...form, duration: val })}
+            onValueChange={(value) => setForm({ ...form, duration: value })}
+            minimumTrackTintColor="#E8434C"
+            maximumTrackTintColor="#8A8A8A"
+            thumbTintColor="#E8434C"
           />
 
           {/* Risk Level Selection */}
@@ -90,7 +99,7 @@ const SuggestSIPScreen = () => {
               {/* Cards for Each Fund */}
               {result.funds?.map((fund, index) => (
                 <View key={index} style={styles.card}>
-                  <Text style={styles.cardTitle}>Scheme Code: {fund.schemeCode}</Text>
+                  <Text style={styles.cardTitle}>Scheme Name: {fund.name}</Text>
                   <View style={styles.cardRow}>
                     <Text style={styles.label}>Risk Level:</Text>
                     <Text style={styles.value}>{fund.risk}</Text>
@@ -105,11 +114,7 @@ const SuggestSIPScreen = () => {
                   </View>
                   <View style={styles.cardRow}>
                     <Text style={styles.label}>Latest NAV:</Text>
-                    <Text style={styles.value}>₹{fund.latestNAV}</Text>
-                  </View>
-                  <View style={styles.cardRow}>
-                    <Text style={styles.label}>NAV Date:</Text>
-                    <Text style={styles.value}>{fund.navDate}</Text>
+                    <Text style={styles.value}>₹{fund.currentValue ? fund.currentValue : 'Not available'}</Text>
                   </View>
                 </View>
               ))}
@@ -127,180 +132,133 @@ const SuggestSIPScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0c0e13", // Dark background for the container
+    backgroundColor: "#0c0e13",
   },
   contentContainer: {
     flex: 1,
-    padding: 20,
-    paddingBottom: 60, // Space for bottom navbar
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 80,
   },
   formContainer: {
-    backgroundColor: "#12151c", // Dark card background
-    borderRadius: 12, // Rounded corners for the form container
+    backgroundColor: "#161a23",
+    borderRadius: 16,
     padding: 20,
-    elevation: 10,
     marginBottom: 20,
-    shadowColor: "#000", // Soft shadow
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
   },
   title: {
-    fontSize: 28, // Larger font size for a modern look
+    fontSize: 26,
     fontWeight: "bold",
     color: "#fff",
-    marginBottom: 20,
+    marginBottom: 24,
     textAlign: "center",
   },
   inputLabel: {
-    color: "#fff",
-    marginBottom: 10,
-    fontSize: 18, // Larger font for better readability
+    color: "#d0d0d0",
+    marginBottom: 6,
+    fontSize: 16,
   },
-  input: {
-    height: 50,
-    backgroundColor: "#2A2E38",
-    color: "#fff",
-    borderRadius: 12, // Rounded corners for inputs
-    paddingHorizontal: 20,
-    marginBottom: 20,
-    fontSize: 18,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+  slider: {
+    width: "100%",
+    height: 40,
+    marginBottom: 16,
   },
   toggleContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    justifyContent: "space-around",
+    marginVertical: 12,
   },
   toggleButton: {
+    flex: 1,
     paddingVertical: 12,
-    paddingHorizontal: 30,
+    marginHorizontal: 6,
     borderRadius: 25,
-    backgroundColor: "#E8434C", // Blue for toggle buttons
+    backgroundColor: "#383C47",
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
-    marginHorizontal: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
   },
   activeButton: {
-    backgroundColor: "#2A2E38", // Darker shade when active
+    backgroundColor: "#E8434C",
   },
   toggleButtonText: {
     color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
+    fontSize: 14,
+    fontWeight: "600",
   },
   spacer: {
-    height: 20, // Space between toggle buttons and submit button
+    height: 10,
   },
   submitButton: {
-    backgroundColor: "#E8434C", // Blue background
-    paddingVertical: 12,
-    borderRadius: 25, // Rounded button
+    backgroundColor: "#E8434C",
+    paddingVertical: 14,
+    borderRadius: 30,
     marginTop: 20,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
   },
   submitButtonText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
   },
   resultContainer: {
     marginTop: 20,
-    padding: 20,
-    backgroundColor: "#2A2E38", // Dark result box
+    backgroundColor: "#1c1f28",
     borderRadius: 12,
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-  },
-  resultTitle: {
-    fontSize: 22, // Larger font for results
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  resultValue: {
-    fontSize: 28, // Larger font for result value
-    fontWeight: "bold",
-    color: "#1E90FF", // Blue for the result value
-    marginVertical: 10,
-  },
-  resultMessage: {
-    fontSize: 16,
-    color: "#A1A1A1", // Light gray for the message
-  },
-  resultContainer: {
-    padding: 16,
+    padding: 20,
   },
   resultTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginTop: 20,
+    fontWeight: "bold",
+    color: "#ffffff",
     marginBottom: 10,
   },
   resultValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#28a745',
-    marginBottom: 8,
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#00BFFF",
+    marginBottom: 10,
   },
   resultMessage: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 16,
+    fontSize: 14,
+    color: "#aaaaaa",
+    marginBottom: 12,
   },
-  errorMessage: {
+  sectionTitle: {
     fontSize: 16,
-    color: 'red',
+    color: "#ffffff",
+    fontWeight: "600",
     marginBottom: 8,
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: "#2c2f36",
+    borderRadius: 10,
     padding: 16,
     marginBottom: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "600",
+    color: "#ffffff",
     marginBottom: 12,
   },
   cardRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 6,
   },
   label: {
-    fontWeight: '600',
-    color: '#333',
+    color: "#d0d0d0",
+    fontWeight: "500",
   },
   value: {
-    color: '#555',
+    color: "#ffffff",
+  },
+  errorMessage: {
+    fontSize: 14,
+    color: "#ff4d4d",
+    marginBottom: 10,
   },
 });
+
 
 export default SuggestSIPScreen;

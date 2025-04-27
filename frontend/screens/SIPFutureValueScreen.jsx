@@ -41,11 +41,9 @@ const SIPFutureValueScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <AppBar />
-
       <ScrollView style={styles.contentContainer}>
         <View style={styles.formContainer}>
           <Text style={styles.title}>SIP Future Value Calculator</Text>
-
           <Text style={styles.inputLabel}>SIP Amount: ₹{form.sipAmount}</Text>
           <Slider
             style={styles.slider}
@@ -58,7 +56,6 @@ const SIPFutureValueScreen = () => {
             maximumTrackTintColor="#8A8A8A"
             thumbTintColor="#E8434C"
           />
-
           <Text style={styles.inputLabel}>Duration (Years): {form.duration}</Text>
           <Slider
             style={styles.slider}
@@ -71,7 +68,6 @@ const SIPFutureValueScreen = () => {
             maximumTrackTintColor="#8A8A8A"
             thumbTintColor="#E8434C"
           />
-
           <Text style={styles.inputLabel}>Risk Level:</Text>
           <View style={styles.toggleContainer}>
             {["Low", "Medium", "High"].map((level, index) => (

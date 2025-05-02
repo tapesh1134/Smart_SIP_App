@@ -36,7 +36,25 @@ Smart SIP is a financial planning application that helps users achieve their inv
 ---
 
 ## 📂 Project Structure
-<pre> ``` Smart-SIP/ │ ├── backend/ │ ├── controllers/ │ ├── routes/ │ ├── models/ │ ├── utils/ │ └── server.js │ ├── frontend/ │ ├── components/ │ ├── screens/ │ ├── navigation/ │ ├── services/ │ └── App.tsx │ ├── README.md └── .env.example ``` </pre>
+<pre> ```
+Smart-SIP/
+│
+├── backend/
+│ ├── controllers/
+│ ├── routes/
+│ ├── models/
+│ ├── utils/
+│ └── server.js
+│
+├── frontend/
+│ ├── components/
+│ ├── screens/
+│ ├── navigation/
+│ ├── services/
+│ └── App.tsx
+│
+├── README.md
+``` </pre>
 
 ---
 

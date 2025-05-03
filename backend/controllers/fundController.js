@@ -1,4 +1,3 @@
-// Get all mutual funds
 import axios from "axios";
 import { Fund } from "../models/fundSchema.js";
 
@@ -46,7 +45,6 @@ export const getAllFunds = async (req, res) => {
 };
 
 
-// Add a new mutual fund
 export const addFund = async (req, res) => {
   try {
     const { schemeCode, risk } = req.body;

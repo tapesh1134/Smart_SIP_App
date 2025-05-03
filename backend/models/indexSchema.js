@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const indexSchema = new mongoose.Schema({
   name: String,
-  type: String, // 'NSE' or 'BSE'
+  type: String,
   current_value: Number,
   oneYearCAGR: Number,
   risk: {

@@ -19,7 +19,6 @@ const seedIndices = async () => {
   ];
 
   try {
-    // Insert the indices data into the database
     await Index.insertMany(indicesData);
     console.log("Indices seeded successfully.");
   } catch (err) {
@@ -32,9 +31,9 @@ mongoose.connect('mongodb+srv://tapesh:tapesh@cluster0.3ozzf.mongodb.net/smart-s
   .then(async () => {
     console.log("Connected to MongoDB.");
     await seedIndices();
-    mongoose.disconnect(); // Close connection after seeding
+    mongoose.disconnect();
   })
   .catch(err => {
     console.error("Error connecting to MongoDB:", err);
-    mongoose.disconnect(); // Close connection if error occurs
+    mongoose.disconnect();
   });

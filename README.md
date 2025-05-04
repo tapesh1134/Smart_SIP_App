@@ -20,18 +20,25 @@ Smart SIP is a financial planning application that helps users achieve their inv
 
 ## 🛠️ Tech Stack
 
-### 🔮 Frontend (React Native + Expo)
-- React Native with TypeScript – cross-platform mobile app development
-- Expo CLI – easy development and deployment
-- Axios – for API integration
-- React Navigation – seamless screen transitions
-- Styled Components / Custom Styles – for consistent UI
+## 🛠️ Tech Stack
 
-### ⚙️ Backend (Node.js + Express)
-- Node.js + Express.js – RESTful API server
-- MongoDB with Mongoose – NoSQL database for user and fund data
-- JWT – secure token-based authentication
-- CORS, dotenv, body-parser – essential middlewares
+### 🔮 Frontend
+
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge)
+![React Navigation](https://img.shields.io/badge/React_Navigation-000000?style=for-the-badge&logo=react&logoColor=white)
+
+### ⚙️ Backend
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+![dotenv](https://img.shields.io/badge/dotenv-8DD6F9?style=for-the-badge)
+
 
 ---
 

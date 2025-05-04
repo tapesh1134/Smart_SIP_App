@@ -20,18 +20,18 @@ Smart SIP is a financial planning application that helps users achieve their inv
 
 ## 🛠️ Tech Stack
 
-### Frontend (React Native + Expo)
-- React Native (TypeScript)
-- Expo CLI
-- Axios
-- React Navigation
+### 🔮 Frontend (React Native + Expo)
+React Native with TypeScript – cross-platform mobile app development
+Expo CLI – easy development and deployment
+Axios – for API integration
+React Navigation – seamless screen transitions
+Styled Components / Custom Styles – for consistent UI
 
-### Backend (Node.js + Express)
-- Node.js
-- Express.js
-- MongoDB (Mongoose)
-- JWT Authentication
-- CORS, dotenv
+### ⚙️ Backend (Node.js + Express)
+Node.js + Express.js – RESTful API server
+MongoDB with Mongoose – NoSQL database for user and fund data
+JWT – secure token-based authentication
+CORS, dotenv, body-parser – essential middlewares
 
 ---
 

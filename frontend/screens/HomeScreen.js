@@ -6,7 +6,6 @@ import WelcomeScreen from "./Home/WelcomeScreen";
 import FinancialTools from "./Home/FinancialTools";
 import ServiceList from "./Home/ServiceList";
 import BottomNavbar from "../components/BottomNavbar";
-
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
